@@ -6,12 +6,12 @@ use std::io::prelude::*;
 // 1 for Rock, 2 for Paper, and 3 for Scissors
 // 0 if you lost, 3 if the round was a draw, and 6 if you won
 
-struct TTTRound {
+struct RPSRound {
     opponent: char,
     you: char
 }
 
-impl TTTRound {
+impl RPSRound {
 
     fn get_score(&self) -> i32 {
         let mut score = 0;
@@ -36,15 +36,15 @@ impl TTTRound {
     }
 }
 
-fn read_round(line: String) -> TTTRound {
-    TTTRound {
+fn read_round(line: String) -> RPSRound {
+    RPSRound {
         opponent: line.chars().nth(0).unwrap(),
         you: line.chars().nth(2).unwrap()
     }
 }
 
-fn read_all_rounds() -> Vec< TTTRound > {
-    let mut rounds: Vec< TTTRound > = Vec::new();
+fn read_all_rounds() -> Vec< RPSRound > {
+    let mut rounds: Vec< RPSRound > = Vec::new();
 
     let stdin = io::stdin();
     for line in stdin.lock().lines() {
@@ -54,7 +54,7 @@ fn read_all_rounds() -> Vec< TTTRound > {
     rounds
 }
 
-fn get_sum_of_all_rounds(rounds: &Vec<TTTRound>) -> i32 {
+fn get_sum_of_all_rounds(rounds: &Vec<RPSRound>) -> i32 {
     let mut total: i32 = 0;
     for round in rounds {
         total += round.get_score();
