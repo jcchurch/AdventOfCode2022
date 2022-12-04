@@ -41,20 +41,6 @@ fn sum_of_elf(elf: &Vec<i32>) -> i32 {
     sum
 }
 
-fn compute_sum_of_each_elf(all_elves: &Vec< Vec<i32> >) -> Vec<i32> {
-   let mut each_elf: Vec<i32> = Vec::new();
-   for elf in all_elves {
-       each_elf.push( sum_of_elf(&elf) );
-   }
-   each_elf
-}
-
-fn top_three_elves(each_elf: &mut Vec<i32>) -> i32 {
-   each_elf.sort();
-   let len = each_elf.len();
-   each_elf[len - 3] + each_elf[len - 2] + each_elf[len - 1]
-}
-
 fn largest_calories_among_elves(all_elves: &Vec< Vec<i32> >) -> i32 {
    let mut largest = -1; 
    for elf in all_elves {
@@ -68,7 +54,5 @@ fn largest_calories_among_elves(all_elves: &Vec< Vec<i32> >) -> i32 {
 
 fn main() {
     let all_elves = read_all_elves();    
-    let mut each_elf = compute_sum_of_each_elf(&all_elves);
-    // println!("{}", largest_calories_among_elves(&all_elves));
-    println!("{}", top_three_elves(&mut each_elf));
+    println!("{}", largest_calories_among_elves(&all_elves));
 }
