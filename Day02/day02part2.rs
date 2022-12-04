@@ -16,29 +16,6 @@ struct TTTRound {
 
 impl TTTRound {
 
-    #[allow(dead_code)]
-    fn get_score(&self) -> i32 {
-        let mut score = 0;
-        if self.you == 'X' { score = 1; }
-        if self.you == 'Y' { score = 2; }
-        if self.you == 'Z' { score = 3; }
-
-        if (self.opponent == 'A' && self.you == 'X') ||
-           (self.opponent == 'B' && self.you == 'Y') ||
-           (self.opponent == 'C' && self.you == 'Z') {
-               return 3 + score;
-        }
-
-
-        if (self.opponent == 'A' && self.you == 'Y') ||
-           (self.opponent == 'B' && self.you == 'Z') ||
-           (self.opponent == 'C' && self.you == 'X') {
-               return 6 + score;
-        }
-
-        return score;
-    }
-
     fn get_strategy_score(&self) -> i32 {
         if self.opponent == 'A' && self.you == 'X' {
             return 3; // Return scissors
