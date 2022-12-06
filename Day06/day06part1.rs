@@ -19,7 +19,7 @@ fn find_signal_start(signal: &String) -> usize {
             return i;
         }
     }
-    1000
+    0
 }
 
 fn main() {
