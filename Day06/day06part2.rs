@@ -8,14 +8,15 @@ fn read_signal() -> String {
 }
 
 fn is_unique(message: &VecDeque<char>) -> bool {
-    let mut tally: [u32; 26] = [0; 26];
+    let mut tally: u32 = 0;
 
     for character in message.iter() {
-        if tally[*character as usize - 'a' as usize] > 0 {
+        let mask: u32 = 1 << (*character as u32 - 'a' as u32);
+        if tally & mask > 0 {
             return false;
         }
 
-        tally[*character as usize - 'a' as usize] += 1;
+        tally |= mask;
     }
 
     true
