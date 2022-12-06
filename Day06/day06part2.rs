@@ -8,11 +8,7 @@ fn read_signal() -> String {
 }
 
 fn is_unique(message: &VecDeque<char>) -> bool {
-    let mut tally: Vec<u32> = Vec::new();
-
-    for _ in 0..26 {
-        tally.push(0);
-    }
+    let mut tally: [u32; 26] = [0; 26];
 
     for character in message.iter() {
         if tally[*character as usize - 'a' as usize] > 0 {
@@ -40,7 +36,7 @@ fn find_signal_message_start(signal: &String) -> usize {
         }
         message.pop_front();
     }
-    1000
+    0
 }
 
 fn main() {
