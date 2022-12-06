@@ -8,6 +8,7 @@ fn read_signal() -> String {
 
 fn find_signal_start(signal: &String) -> usize {
     let chars: Vec<char> = signal.chars().collect();
+    // Hardcoding things is fun and has zero drawbacks at all!
     for i in 3..signal.len() {
         if chars[i-3] != chars[i-2] &&
            chars[i-3] != chars[i-1] &&
