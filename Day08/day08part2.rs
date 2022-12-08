@@ -1,8 +1,7 @@
 use std::io;
 use std::io::prelude::*;
 use std::convert::TryInto;
-pub mod char_matrix;
-pub mod int_matrix;
+pub mod matrix;
 
 fn read_all_lines() -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();
@@ -15,15 +14,15 @@ fn read_all_lines() -> Vec<String> {
     lines
 }
 
-fn char_diff(a: char, b: char) -> i32 {
+fn diff(a: char, b: char) -> i32 {
     b as i32 - a as i32
 }
 
-fn is_taller(trees: &char_matrix::CharMatrix, x: usize, y: usize, a: usize, b: usize) -> bool {
-    char_diff( trees.get(a,b),  trees.get(x, y) ) > 0
+fn is_taller(trees: &matrix::Matrix<char>, x: usize, y: usize, a: usize, b: usize) -> bool {
+    diff( trees.get(a,b),  trees.get(x, y) ) > 0
 }
 
-fn populate_visible(trees: &char_matrix::CharMatrix, visible: &mut int_matrix::IntegerMatrix) {
+fn populate_visible(trees: &matrix::Matrix<char>, visible: &mut matrix::Matrix<i32>) {
     for x in 0..trees.width() {
         visible.set(x, 0, 1);
         visible.set(x, trees.height()-1, 1);
@@ -79,7 +78,7 @@ fn populate_visible(trees: &char_matrix::CharMatrix, visible: &mut int_matrix::I
     }
 }
 
-fn compute_tree_visibility(trees: &char_matrix::CharMatrix, x: usize, y: usize) -> u32 {
+fn compute_tree_visibility(trees: &matrix::Matrix<char>, x: usize, y: usize) -> u32 {
     let mut north: u32 = 0;
     let mut south: u32 = 0;
     let mut east : u32 = 0;
@@ -132,8 +131,8 @@ fn compute_tree_visibility(trees: &char_matrix::CharMatrix, x: usize, y: usize) 
 
 fn main() {
     let lines = read_all_lines();
-    let trees = char_matrix::build(&lines);
-    let mut visible = int_matrix::build(trees.width(), trees.height());
+    let trees = matrix::load_char_matrix(&lines);
+    let mut visible: matrix::Matrix<i32> = matrix::build(trees.width(), trees.height(), 0);
 
     populate_visible(&trees, &mut visible);
 
