@@ -24,7 +24,7 @@ impl CharMatrix {
         self.grid.len()
     }
 
-    pub fn get(self: &mut CharMatrix, x: usize, y: usize) -> char {
+    pub fn get(self: &CharMatrix, x: usize, y: usize) -> char {
         self.grid[y][x]
     }
 
