@@ -1,6 +1,6 @@
 use std::io;
 use std::io::prelude::*;
-pub mod char_matrix;
+pub mod matrix;
 
 fn read_all_lines() -> Vec<String> {
     let mut lines: Vec<String> = Vec::new();
@@ -15,7 +15,7 @@ fn read_all_lines() -> Vec<String> {
 
 fn main() {
     let lines = read_all_lines();
-    let mut matrix = char_matrix::build(&lines);
+    let mut matrix = matrix::load_char_matrix(&lines);
     matrix.display();
     println!("H: {}, W: {}", matrix.height(), matrix.width());
 
