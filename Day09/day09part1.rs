@@ -53,10 +53,8 @@ fn execute_one_motion(motion: &Motion, headx: &mut i32, heady: &mut i32, tailx: 
         let distance = compute_distance(*headx, *heady, *tailx, *taily);
 
         if distance > 1 {
-            let dirx = (*headx - *tailx).signum();
-            let diry = (*heady - *taily).signum();
-            *tailx += dirx;
-            *taily += diry;
+            *tailx += (*headx - *tailx).signum();
+            *taily += (*heady - *taily).signum();
             set.insert( tailx.to_string() + &String::from(":") + &taily.to_string() );
         }
     }

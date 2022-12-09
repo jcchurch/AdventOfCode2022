@@ -57,10 +57,8 @@ fn execute_one_motion(motion: &Motion, knots: &mut Vec<Point>, set: &mut HashSet
             let distance = compute_distance(knots[i-1].x, knots[i-1].y, knots[i].x, knots[i].y);
 
             if distance > 1 {
-                let dirx = (knots[i-1].x - knots[i].x).signum();
-                let diry = (knots[i-1].y - knots[i].y).signum();
-                knots[i].x += dirx;
-                knots[i].y += diry;
+                knots[i].x += (knots[i-1].x - knots[i].x).signum();
+                knots[i].y += (knots[i-1].y - knots[i].y).signum();
                 if i == 9 {
                     set.insert( knots[i].x.to_string() + &String::from(":") + &knots[i].y.to_string() );
                 }
