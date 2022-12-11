@@ -3,7 +3,6 @@ use std::io::prelude::*;
 use std::collections::VecDeque;
 
 struct Monkey {
-    id: i32,
     items: VecDeque<i32>,
     operation: String,
     test: i32,
@@ -13,7 +12,6 @@ struct Monkey {
 }
 
 fn read_monkey(lines: &Vec<String>, i: &mut usize) -> Monkey {
-    let mut id: i32 = -1;
     let mut items: VecDeque<i32> = VecDeque::new();
     let mut operation: String = "noop".to_string();
     let mut test: i32 = -1;
@@ -22,11 +20,6 @@ fn read_monkey(lines: &Vec<String>, i: &mut usize) -> Monkey {
 
     while *i < lines.len() && lines[*i] != "" {
         let parts: Vec<&str> = lines[*i].split_whitespace().collect();
-
-        if parts[0] == "Monkey" {
-            let idparts: Vec<&str> = parts[1].split(':').collect();
-            id = idparts[0].parse().unwrap();
-        }
 
         if parts[0] == "Starting" {
             let allitems: Vec<&str> = lines[*i].split(": ").collect();
@@ -61,7 +54,6 @@ fn read_monkey(lines: &Vec<String>, i: &mut usize) -> Monkey {
     }
 
     Monkey {
-        id: id,
         items: items,
         operation: operation,
         test: test,
@@ -152,14 +144,6 @@ fn compute_monkey_business(monkeys: &Vec<Monkey>) -> usize {
     inspections.sort();
 
     inspections[inspections.len() - 1] * inspections[inspections.len() - 2]
-}
-
-fn show_monkey(monkey: &Monkey) {
-    print!("Monkey {:2}: ", monkey.id);
-    for item in &monkey.items {
-        print!("{}, ", item);
-    }
-    println!("");
 }
 
 fn main() {

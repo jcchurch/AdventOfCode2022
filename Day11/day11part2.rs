@@ -3,30 +3,23 @@ use std::io::prelude::*;
 use std::collections::VecDeque;
 
 struct Monkey {
-    id: i32,
-    items: VecDeque<i32>,
+    items: VecDeque<u64>,
     operation: String,
-    test: i32,
+    test: u64,
     true_branch: usize,
     false_branch: usize,
     inspections: usize
 }
 
 fn read_monkey(lines: &Vec<String>, i: &mut usize) -> Monkey {
-    let mut id: i32 = -1;
-    let mut items: VecDeque<i32> = VecDeque::new();
+    let mut items: VecDeque<u64> = VecDeque::new();
     let mut operation: String = "noop".to_string();
-    let mut test: i32 = -1;
+    let mut test: u64 = 0;
     let mut true_branch: usize = 0;
     let mut false_branch: usize = 0;
 
     while *i < lines.len() && lines[*i] != "" {
         let parts: Vec<&str> = lines[*i].split_whitespace().collect();
-
-        if parts[0] == "Monkey" {
-            let idparts: Vec<&str> = parts[1].split(':').collect();
-            id = idparts[0].parse().unwrap();
-        }
 
         if parts[0] == "Starting" {
             let allitems: Vec<&str> = lines[*i].split(": ").collect();
@@ -61,7 +54,6 @@ fn read_monkey(lines: &Vec<String>, i: &mut usize) -> Monkey {
     }
 
     Monkey {
-        id: id,
         items: items,
         operation: operation,
         test: test,
@@ -93,15 +85,15 @@ fn read_all_monkeys(lines: &Vec<String>) -> Vec<Monkey> {
     monkeys
 }
 
-fn process_monkey(monkeys: &mut Vec<Monkey>, monkey_id: usize, megamod: i32) {
+fn process_monkey(monkeys: &mut Vec<Monkey>, monkey_id: usize, megamod: u64) {
     while monkeys[monkey_id].items.len() > 0 {
         monkeys[monkey_id].inspections += 1;
 
-        let item: i32 = monkeys[monkey_id].items.pop_front().unwrap();
+        let item: u64 = monkeys[monkey_id].items.pop_front().unwrap();
         let operation_parts: Vec<&str> = monkeys[monkey_id].operation.split(' ').collect();
-        let mut next_item: i32 = 0;
-        let mut a: i32;
-        let mut b: i32;
+        let mut next_item: u64 = 0;
+        let a: u64;
+        let b: u64;
 
         // Inspect
         if operation_parts[0] == "old" {
@@ -117,8 +109,6 @@ fn process_monkey(monkeys: &mut Vec<Monkey>, monkey_id: usize, megamod: i32) {
         else {
             b = operation_parts[2].parse().unwrap();
         }
-
-        a %= megamod;
 
         if operation_parts[1] == "+" {
             next_item = a + b;
@@ -138,7 +128,7 @@ fn process_monkey(monkeys: &mut Vec<Monkey>, monkey_id: usize, megamod: i32) {
     }
 }
 
-fn process_one_round(monkeys: &mut Vec<Monkey>, megamod: i32) {
+fn process_one_round(monkeys: &mut Vec<Monkey>, megamod: u64) {
     for monkey_id in 0..monkeys.len() {
         process_monkey(monkeys, monkey_id, megamod);
     }
@@ -155,15 +145,7 @@ fn compute_monkey_business(monkeys: &Vec<Monkey>) -> usize {
     inspections[inspections.len() - 1] * inspections[inspections.len() - 2]
 }
 
-fn show_monkey(monkey: &Monkey) {
-    print!("Monkey {:2}: ", monkey.id);
-    for item in &monkey.items {
-        print!("{}, ", item);
-    }
-    println!("");
-}
-
-fn find_mega_mod(monkeys: &Vec<Monkey>) -> i32 {
+fn find_mega_mod(monkeys: &Vec<Monkey>) -> u64 {
     let mut megamod = 1;
     for monkey in monkeys {
         megamod *= monkey.test;
@@ -176,7 +158,7 @@ fn main() {
     let mut monkeys = read_all_monkeys(&lines);
     let megamod = find_mega_mod(&monkeys);
 
-    for _ in 0..20 {
+    for _ in 0..10000 {
         process_one_round(&mut monkeys, megamod);
     }
 
