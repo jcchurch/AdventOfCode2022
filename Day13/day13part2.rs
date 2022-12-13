@@ -79,44 +79,36 @@ fn compare_lists(left: &Vec<ListType>, right: &Vec<ListType>) -> Ordering {
     let mut index: usize = 0;
 
     while index < left.len() && index < right.len() { 
+        let mut comparison: Ordering = Ordering::Equal;
         match (&left[index], &right[index]) {
             (ListType::Number(x), ListType::Number(y)) => {
                 if x < y {
-                    return Ordering::Less;
+                    comparison = Ordering::Less;
                 }
                 if y < x {
-                    return Ordering::Greater;
+                    comparison = Ordering::Greater;
                 }
             }
 
             (ListType::List(x), ListType::List(y)) => {
-                let comparison = compare_lists(&x, &y);
-                match comparison {
-                    Ordering::Less => { return Ordering::Less; }
-                    Ordering::Greater => { return Ordering::Greater; }
-                    Ordering::Equal => { }
-                }
+                comparison = compare_lists(&x, &y);
             }
 
             (ListType::List(x), ListType::Number(y)) => {
                 let z = vec![ListType::Number(*y)];
-                let comparison = compare_lists(&x, &z);
-                match comparison {
-                    Ordering::Less => { return Ordering::Less; }
-                    Ordering::Greater => { return Ordering::Greater; }
-                    Ordering::Equal => { }
-                }
+                comparison = compare_lists(&x, &z);
             }
 
             (ListType::Number(x), ListType::List(y)) => {
                 let z = vec![ListType::Number(*x)];
-                let comparison = compare_lists(&z, &y);
-                match comparison {
-                    Ordering::Less => { return Ordering::Less; }
-                    Ordering::Greater => { return Ordering::Greater; }
-                    Ordering::Equal => { }
-                }
+                comparison = compare_lists(&z, &y);
             }
+        }
+
+        match comparison {
+            Ordering::Less => { return Ordering::Less; }
+            Ordering::Greater => { return Ordering::Greater; }
+            Ordering::Equal => { }
         }
         index += 1;
     }
