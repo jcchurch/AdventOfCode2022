@@ -1,14 +1,19 @@
 use std::io;
 use std::io::prelude::*;
+use std::cmp::Ordering;
 
 enum ListType {
     Number(i32),
     List(Vec<ListType>)
 }
 
+struct Packet {
+    list: Vec<ListType>
+}
+
 struct Pair {
-    left: Vec<ListType>,
-    right: Vec<ListType>
+    left: Packet,
+    right: Packet
 }
 
 fn read_all_lines() -> Vec<String> {
@@ -30,7 +35,9 @@ fn read_all_pairs(lines: &Vec<String>) -> Vec<Pair> {
         let mut left: usize = 0;
         let mut right: usize = 0;
 
-        pairs.push( Pair { left: read_list(&lines[i], &mut left), right: read_list(&lines[i+1], &mut right) } );
+        pairs.push( Pair { left:  Packet { list: read_list(&lines[i], &mut left) },
+                           right: Packet { list: read_list(&lines[i+1], &mut right) }
+                         });
         i += 3;
     }
 
@@ -76,62 +83,57 @@ fn read_number(line: &String, i: &mut usize) -> i32 {
     value
 }
 
-fn compare_lists(left: &Vec<ListType>, right: &Vec<ListType>) -> Option<bool> {
+fn compare_lists(left: &Vec<ListType>, right: &Vec<ListType>) -> Ordering {
     let mut index: usize = 0;
 
     while index < left.len() && index < right.len() { 
+        let mut comparison: Ordering = Ordering::Equal;
         match (&left[index], &right[index]) {
             (ListType::Number(x), ListType::Number(y)) => {
                 if x < y {
-                    return Some(true);
+                    comparison = Ordering::Less;
                 }
                 if y < x {
-                    return Some(false);
+                    comparison = Ordering::Greater;
                 }
             }
 
             (ListType::List(x), ListType::List(y)) => {
-                let comparison = compare_lists(&x, &y);
-                match comparison {
-                    Some(x) => { return Some(x); }
-                    None => { }
-                }
+                comparison = compare_lists(&x, &y);
             }
 
             (ListType::List(x), ListType::Number(y)) => {
                 let z = vec![ListType::Number(*y)];
-                let comparison = compare_lists(&x, &z);
-                match comparison {
-                    Some(x) => { return Some(x); }
-                    None => { }
-                }
+                comparison = compare_lists(&x, &z);
             }
 
             (ListType::Number(x), ListType::List(y)) => {
                 let z = vec![ListType::Number(*x)];
-                let comparison = compare_lists(&z, &y);
-                match comparison {
-                    Some(x) => { return Some(x); }
-                    None => { }
-                }
+                comparison = compare_lists(&z, &y);
             }
+        }
+
+        match comparison {
+            Ordering::Less => { return Ordering::Less; }
+            Ordering::Greater => { return Ordering::Greater; }
+            Ordering::Equal => { }
         }
         index += 1;
     }
 
     if index >= left.len() && index < right.len() {
-        return Some(true);
+        return Ordering::Less;
     }
 
     if index < left.len() && index >= right.len() {
-        return Some(false);
+        return Ordering::Greater;
     }
 
-    None
+    Ordering::Equal
 }
 
-fn is_left_better_than_right(left: &Vec<ListType>, right: &Vec<ListType>) -> bool {
-    compare_lists(left, right).unwrap()
+fn is_left_less_than_right(left: &Packet, right: &Packet) -> Ordering {
+    compare_lists(&left.list, &right.list)
 }
 
 fn main() {
@@ -141,7 +143,7 @@ fn main() {
     let mut sum: i32 = 0;
     let mut index: i32 = 1;
     for pair in pairs {
-        if is_left_better_than_right(&pair.left, &pair.right) {
+        if is_left_less_than_right(&pair.left, &pair.right) == Ordering::Less {
             sum += index;
         }
         index += 1;
