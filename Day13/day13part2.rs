@@ -132,7 +132,7 @@ fn compare_lists(left: &Vec<ListType>, right: &Vec<ListType>) -> Ordering {
     Ordering::Equal
 }
 
-fn is_left_better_than_right(left: &Packet, right: &Packet) -> Ordering {
+fn is_left_less_than_right(left: &Packet, right: &Packet) -> Ordering {
     compare_lists(&left.list, &right.list)
 }
 
@@ -143,7 +143,7 @@ fn main() {
 
     let mut packets = read_all_packets(&lines);
 
-    packets.sort_by( |a, b| is_left_better_than_right(&a, &b) );
+    packets.sort_by( |a, b| is_left_less_than_right(&a, &b) );
 
     let mut two = 0;
     let mut six = 0;
