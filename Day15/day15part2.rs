@@ -102,39 +102,24 @@ fn merge_two_ranges(a: &Range, b: &Range) -> Option<Range> {
     None
 }
 
-fn merge_ranges(ranges: &Vec<Range>) -> Vec<Range> {
+fn merge_ranges(ranges: &mut Vec<Range>) -> Vec<Range> {
+    ranges.sort_by( |a, b| a.start.cmp(&b.start) );
 
     let mut merged_ranges: Vec<Range> = Vec::new();     
-    for range in ranges {
-        let mut merged = false;
-        for i in 0..merged_ranges.len() {
-            match merge_two_ranges(range, &merged_ranges[i]) {
-                Some(new_range) => {
-                    merged_ranges[i] = new_range;
-                    merged = true;
-                    break;
-                }
-                None => {}
+    merged_ranges.push( Range { start: ranges[0].start, end: ranges[0].end } );
+
+    for i in 1..ranges.len() {
+        let range = merged_ranges.pop().unwrap();
+        match merge_two_ranges(&range, &ranges[i]) {
+            Some(new_range) => merged_ranges.push(new_range),
+            None => {
+                merged_ranges.push(range);
+                merged_ranges.push( Range { start: ranges[i].start, end: ranges[i].end } );
             }
-        }
-        if !merged {
-            merged_ranges.push( Range { start: range.start, end: range.end } );
         }
     }
 
     merged_ranges
-}
-
-fn continious_merge(ranges: &Vec<Range>) -> Vec<Range> {
-    let mut pass_a = merge_ranges(ranges);
-    let mut pass_b = merge_ranges(&pass_a);
-
-    while pass_a.len() != pass_b.len() {
-        pass_a = pass_b.clone();
-        pass_b = merge_ranges(&pass_b);
-    }
-
-    pass_b
 }
 
 fn main() {
@@ -142,8 +127,8 @@ fn main() {
     let pairs = read_all_pairs();
 
     for row in 0..=max {
-        let ranges = find_ranges_at_row(&pairs, row);
-        let merged_ranges = continious_merge(&ranges);
+        let mut ranges = find_ranges_at_row(&pairs, row);
+        let merged_ranges = merge_ranges(&mut ranges);
 
         if merged_ranges.len() > 1 {
             for range in merged_ranges {
